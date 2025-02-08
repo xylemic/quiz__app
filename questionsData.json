@@ -1,0 +1,204 @@
+[
+  {
+    "question": "What does DOM stand for?",
+    "options": [
+      "Document Object Model",
+      "Document Oriented Model",
+      "Data Object Model",
+      "Digital Object Model"
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Which array method creates a new array with the results of calling a function for every array element?",
+    "options": [
+      "forEach()",
+      "filter()",
+      "map()",
+      "reduce()"
+    ],
+    "correct": 2
+  },
+  {
+    "question": "What is the purpose of async/await in JavaScript?",
+    "options": [
+      "To make the code more readable",
+      "To make the code more efficient",
+      "To handle asynchronous operations",
+      "To make the code more concise"
+    ],
+    "correct": 2
+  },
+  {
+    "question": "Which JavaScript feature allows you to create reusable functions?",
+    "options": [
+      "Functions",
+      "Modules",
+      "Classes",
+      "Objects"
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Which CSS property controls the background color of an element?",
+    "options": [
+      "background",
+      "color",
+      "border-color",
+      "background-color"
+    ],
+    "correct": 3
+  },
+  {
+    "question": "What is the difference between let and var in JavaScript?",
+    "options": [
+      "let is block-scoped, var is function-scoped",
+      "let cannot be redeclared, var can be redeclared",
+      "let is hoisted, var is not hoisted",
+      "let is newer, but they are functionally the same"
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Which method is used to add an element at the end of an array?",
+    "options": [
+      "push()",
+      "append()",
+      "add()",
+      "insert()"
+    ],
+    "correct": 0
+  },
+  {
+    "question": "What is the purpose of the preventDefault() method?",
+    "options": [
+      "To stop event bubbling",
+      "To prevent the default browser behavior",
+      "To prevent JavaScript errors",
+      "To prevent event capturing"
+    ],
+    "correct": 1
+  },
+  {
+    "question": "What is closure in JavaScript?",
+    "options": [
+      "A way to close browser windows",
+      "A function that has access to variables in its outer scope",
+      "A method to close database connections",
+      "A way to end JavaScript execution"
+    ],
+    "correct": 1
+  },
+  {
+    "question": "What is the purpose of the this keyword in JavaScript?",
+    "options": [
+      "To reference the current function",
+      "To reference the current file",
+      "To reference the current object",
+      "To reference the parent element"
+    ],
+    "correct": 2
+  },
+  {
+    "question": "What is the purpose of JSON.stringify()?",
+    "options": [
+      "To validate JSON data",
+      "To parse JSON data",
+      "To convert JavaScript objects to JSON strings",
+      "To format JSON data"
+    ],
+    "correct": 2
+  },
+  {
+    "question": "Which operator is used for strict equality comparison?",
+    "options": [
+      "==",
+      "===",
+      "=",
+      "!="
+    ],
+    "correct": 1
+  },
+  {
+    "question": "What is the purpose of the localStorage API in JavaScript?",
+    "options": [
+      "To store data that expires after a session",
+      "To store data persistently in the browser",
+      "To store cookies",
+      "To store server logs"
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Which keyword is used to define a constant variable in JavaScript?",
+    "options": [
+      "let",
+      "var",
+      "const",
+      "final"
+    ],
+    "correct": 2
+  },
+  {
+    "question": "What is event delegation in JavaScript?",
+    "options": [
+      "A technique to attach event listeners to a parent element",
+      "A method to delegate functions to child elements",
+      "A built-in JavaScript function",
+      "A way to delay event execution"
+    ],
+    "correct": 0
+  },
+  {
+    "question": "What does NaN stand for in JavaScript?",
+    "options": [
+      "Not a Name",
+      "Not a Number",
+      "Negative and Null",
+      "Null and None"
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Which function is used to convert a string to an integer in JavaScript?",
+    "options": [
+      "parseInt()",
+      "parseFloat()",
+      "Number()",
+      "toFixed()"
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Which HTTP method is used to update a resource?",
+    "options": [
+      "GET",
+      "POST",
+      "PUT",
+      "DELETE"
+    ],
+    "correct": 2
+  },
+  {
+    "question": "What does the Fetch API do in JavaScript?",
+    "options": [
+      "Handles file uploads",
+      "Fetches resources from a server",
+      "Reads local storage",
+      "Manipulates the DOM"
+    ],
+    "correct": 1
+  },
+  {
+    "question": "What is a promise in JavaScript?",
+    "options": [
+      "A way to handle asynchronous operations",
+      "A new type of function",
+      "A data storage method",
+      "A type of variable"
+    ],
+    "correct": 0
+  }
+]
+
+

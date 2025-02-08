@@ -1,136 +1,35 @@
-// quiz module
 const quizModule = (() => {
-  // questions data
-  const questions = [
-    {
-      question: 'What does DOM stand for?',
-      options: [
-        'Document Object Model',
-        'Document Oriented Model',
-        'Data Object Model',
-        'Digital Object Model'
-      ],
-      correct: 0
-    },
-    {
-      question: 'Which array method creates a new array with the results of calling a function for every array element?',
-      options: [
-        'forEach()',
-        'filter()',
-        'map()',
-        'reduce()'
-      ],
-      correct: 2
-    },
-    {
-      question: 'What is the purpose of async/await in JavaScript',
-      options: [
-        'To make the code more readable',
-        'To make the code more efficient',
-        'To handle asynchronous operations',
-        'To make the code more concise'
-      ],
-      correct: 2
-    },
-    {
-      question: 'Which JavaScript feature allows you to create reusable functions?',
-      options: [
-        'Functions',
-        'Modules',
-        'Classes',
-        'Objects'
-      ],
-      correct: 0
-    },
-    {
-      question: 'Which CSS property controls the background color of an element?',
-      options: [
-        'background',
-        'color',
-        'border-color',
-        'background-color'
-      ],
-      correct: 3
-    },
-    {
-      question: 'What is the difference between let and var in JavaScript?',
-      options: [
-        'let is block-scoped, var is function-scoped',
-        'let cannot be redeclared, var can be redeclared',
-        'let is hoisted, var is not hoisted',
-        'let is newer, but they are functionally the same'
-      ],
-      correct: 0
-    },
-    {
-      question: 'Which method is used to add an element at the end of an array?',
-      options: [
-        'push()',
-        'append()',
-        'add()',
-        'insert()'
-      ],
-      correct: 0
-    },
-    {
-      question: 'What is the purpose of the preventDefault() method?',
-      options: [
-        'To stop event bubbling',
-        'To prevent the default browser behavior',
-        'To prevent JavaScript errors',
-        'To prevent event capturing'
-      ],
-      correct: 1
-    },
-    {
-      question: 'What is closure in JavaScript?',
-      options: [
-        'A way to close browser windows',
-        'A function that has access to variables in its outer scope',
-        'A method to close database connections',
-        'A way to end JavaScript execution'
-      ],
-      correct: 1
-    },
-    {
-      question: 'What is the purpose of the this keyword in JavaScript?',
-      options: [
-        'To reference the current function',
-        'To reference the current file',
-        'To reference the current object',
-        'To reference the parent element'
-      ],
-      correct: 2
-    },
-    {
-      question: 'What is the purpose of JSON.stringify()?',
-      options: [
-        'To validate JSON data',
-        'To parse JSON data',
-        'To convert JavaScript objects to JSON strings',
-        'To format JSON data'
-      ],
-      correct: 2
-    },
-    {
-      question: 'Which operator is used for strict equality comparison?',
-      options: [
-        '==',
-        '===',
-        '=',
-        '!='
-      ],
-      correct: 1
+  const togglePause = () => {
+    isPaused = !isPaused;
+    if (!isPaused) {
+      startTime = Date.now() - (timeElapsed * 1000);
     }
-  ];
+    pauseButton.textContent = isPaused ? 'Resume' : 'Pause';
+  };
 
+
+  let questions = [];
   let currentQuestion = 0;
   let score = 0;
   let selectedOption = null;
   let startTime;
   let timerInterval;
+  let isPaused = false;
+  let timeElapsed = 0;
 
-  // DOM elements
+  // Optional audio - with error handling
+  let correctSound, wrongSound;
+  try {
+    correctSound = new Audio('correct.mp3');
+    wrongSound = new Audio('wrong.mp3');
+  } catch (error) {
+    console.warn('Audio files not loaded, continuing without sound');
+    correctSound = { play: () => { } };
+    wrongSound = { play: () => { } };
+  }
+
+  // DOM elements - Updated selectors to match HTML
+  const quizContainer = document.querySelector('.quiz__container');
   const quizElement = document.getElementById('quiz');
   const resultElement = document.querySelector('.result');
   const progressText = document.querySelector('.progress__text');
@@ -138,44 +37,93 @@ const quizModule = (() => {
   const questionElement = document.querySelector('.question');
   const optionsElement = document.querySelector('.options');
   const nextButton = document.querySelector('.next__btn');
+  const startButton = document.querySelector('.start__btn');
+  const pauseButton = document.querySelector('.pause__btn');
   const scoreElement = document.querySelector('.score');
   const timeElement = document.querySelector('.timer');
   const timeTakenElement = document.querySelector('.time__taken');
   const themeToggle = document.querySelector('.theme__toggle');
   const scoreList = document.querySelector('.score__list');
+  const startScreen = document.querySelector('.start__screen');
+
+  // event listeners
+  const setupEventListeners = () => {
+    startButton?.addEventListener('click', init);
+    pauseButton?.addEventListener('click', togglePause);
+  };
 
   // initialize quiz
-  const init = () => {
-    startTime = Date.now();
-    updateTimer();
-    timerInterval = setInterval(updateTimer, 1000);
-    showQuestion();
-    nextButton.addEventListener('click', handleNext);
-    setupThemeToggle();
-  };
+  async function init() {
+    try {
+      startButton.style.display = 'none';
+      quizContainer.style.display = 'block';
+      await loadQuestions();
+      if (questions.length === 0) {
+        throw new Error('No questions loaded');
+      }
+      shuffleArray(questions);
+      startTime = Date.now() - (timeElapsed * 1000);
+      updateTimer();
+      timerInterval = setInterval(updateTimer, 1000);
+      showQuestion();
+      nextButton.addEventListener('click', handleNext);
+      startScreen.style.display = 'none';
+    } catch (error) {
+      console.error('Error initializing quiz:', error);
+      alert('Failed to initialize quiz. Please try again.');
+    }
+  }
 
   // update timer
   const updateTimer = () => {
-    const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-    const minutes = Math.floor(elapsedTime / 60);
-    const seconds = elapsedTime % 60;
+    if (isPaused) return;
+    const currentTime = Math.floor((Date.now() - startTime) / 1000);
+    const minutes = Math.floor(currentTime / 60);
+    const seconds = currentTime % 60;
     timeElement.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    timeElapsed = currentTime;
   };
+
+  // load questions from JSON
+  async function loadQuestions() {
+    try {
+      const response = await fetch('questionsData.json');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      questions = await response.json();
+    } catch (error) {
+      console.error('Error loading questions:', error);
+      throw error;
+    }
+  }
 
   // display current question
   const showQuestion = () => {
     const question = questions[currentQuestion];
+    if (!question) return;
+
+    const optionsCopy = [...question.options];
+    shuffleArray(optionsCopy);
+
     progressText.textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
     progressBar.style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+    progressBar.setAttribute('aria-valuenow', ((currentQuestion + 1) / questions.length) * 100);
     questionElement.textContent = question.question;
 
     optionsElement.innerHTML = '';
-
-    question.options.forEach((option, index) => {
+    optionsCopy.forEach((option, index) => {
       const optionElement = document.createElement('div');
       optionElement.className = 'option';
+      optionElement.setAttribute('role', 'button');
+      optionElement.setAttribute('tabindex', '0');
       optionElement.textContent = option;
-      optionElement.addEventListener('click', () => selectOption(index));
+      optionElement.addEventListener('click', () => selectOption(index, optionsCopy));
+      optionElement.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          selectOption(index, optionsCopy);
+        }
+      });
       optionsElement.appendChild(optionElement);
     });
 
@@ -184,18 +132,21 @@ const quizModule = (() => {
   };
 
   // handle option selection
-  const selectOption = (index) => {
+  const selectOption = (index, shuffledOptions) => {
     if (selectedOption !== null) return;
     selectedOption = index;
 
     const options = optionsElement.querySelectorAll('.option');
-    const correctAnswer = questions[currentQuestion].correct;
+    const currentQ = questions[currentQuestion];
+    const correctAnswerIndex = shuffledOptions.indexOf(currentQ.options[currentQ.correct]);
 
     options.forEach((option, i) => {
-      if (i === correctAnswer) {
+      if (i === correctAnswerIndex) {
         option.classList.add('correct');
-      } else if (i === index && index !== correctAnswer) {
+        if (i === index) correctSound.play();
+      } else if (i === index) {
         option.classList.add('incorrect');
+        wrongSound.play();
       }
     });
 
@@ -204,7 +155,11 @@ const quizModule = (() => {
 
   // handle next button click
   const handleNext = async () => {
-    if (selectedOption === questions[currentQuestion].correct) {
+    const currentQ = questions[currentQuestion];
+    const options = optionsElement.querySelectorAll('.option');
+    const selectedOptionText = options[selectedOption]?.textContent;
+
+    if (selectedOptionText === currentQ.options[currentQ.correct]) {
       score++;
     }
 
@@ -221,21 +176,30 @@ const quizModule = (() => {
   // show final result
   const showResult = () => {
     clearInterval(timerInterval);
-    const timeTaken = Math.floor((Date.now() - startTime) / 1000);
+    const timeTaken = timeElapsed;
     const minutes = Math.floor(timeTaken / 60);
     const seconds = timeTaken % 60;
 
     quizElement.style.display = 'none';
     resultElement.style.display = 'block';
-    scoreElement.textContent = `${score} out of ${questions.length}`;
+    scoreElement.textContent = `Your score: ${score} out of ${questions.length}`;
     timeTakenElement.textContent = `Time taken: ${minutes}m ${seconds}s`;
 
     const currentScore = {
-      score: score,
-      time: timeTaken
+      score,
+      time: timeTaken,
+      date: new Date().toISOString()
     };
     updateHighScores(currentScore);
     displayHighScores();
+  };
+
+  // shuffle array
+  const shuffleArray = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
   };
 
   // update high scores
@@ -244,7 +208,7 @@ const quizModule = (() => {
       const highScores = JSON.parse(localStorage.getItem('quizHighScores') || '[]');
       highScores.push(currentScore);
       highScores.sort((a, b) => b.score - a.score || a.time - b.time);
-      highScores.splice(5); // Keep only top 5 scores
+      highScores.splice(5);
       localStorage.setItem('quizHighScores', JSON.stringify(highScores));
     } catch (error) {
       console.error('Error updating high scores:', error);
@@ -257,9 +221,10 @@ const quizModule = (() => {
       const highScores = JSON.parse(localStorage.getItem('quizHighScores') || '[]');
       scoreList.innerHTML = highScores
         .map((entry, index) => `
-          <li class="score__item">
+          <li class="score__item" tabindex="0">
             <span>#${index + 1} Score: ${entry.score}/${questions.length}</span>
             <span>Time: ${Math.floor(entry.time / 60)}m ${entry.time % 60}s</span>
+            <span>Date: ${new Date(entry.date).toLocaleDateString()}</span>
           </li>
         `)
         .join('');
@@ -288,12 +253,16 @@ const quizModule = (() => {
     });
   };
 
+  // initialize event listeners
+  setupEventListeners();
+
+  // invoking theme toggle functionality
+  setupThemeToggle();
+
+  // public interface
   return {
     init
   };
 })();
-
-// start the quiz
-document.addEventListener('DOMContentLoaded', quizModule.init);
 
 

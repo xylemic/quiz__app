@@ -11,30 +11,43 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <button class="theme__toggle">
+  <button class="theme__toggle" aria-label="Toggle Theme" title="Switch Theme">
     <i class="fas fa-moon"></i>
   </button>
 
-  <div class="quiz__container fade__in">
+  <!-- start screen -->
+   <div class="start__screen">
+  <h1>Welcome to the Ultimate Quiz!</h1>
+  <p>Test your knowledge and see if you can make it to the high scores!</p>
+  <ul class="instructions">
+    <li>⏳ You have a timer running!</li>
+    <li>✅ Answer correctly to score points.</li>
+    <li>🎯 Try to finish as quickly as possible!</li>
+  </ul>
+  <button class="button start__btn">Start Quiz</button>
+</div>
+
+  <div class="quiz__container fade__in" role="main" aria-live="polite" style="display: none;">
     <div id="quiz">
       <div class="header">
-        <div class="progress__text"></div>
-        <div class="timer">00:00</div>
+        <div class="progress__text" aria-label="Progress Indicator"></div>
+        <div class="timer" aria-live="assertive">00:00</div>
       </div>
+      <button class="button pause__btn" aria-label="Pause or Resume Quiz">Pause</button>
       <div class="progress__container">
-        <div class="progress__bar"></div>
+        <div class="progress__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
       </div>
-      <div class="question"></div>
-      <div class="options"></div>
+      <div class="question" tabindex="0"></div>
+      <div class="options" role="group" aria-label="Answer Options"></div>
       <button class="button next__btn" disabled>Next Question</button>
     </div>
     <div class="result">
-      <h2>Quiz Complete!</h2>
-      <div class="score"></div>
-      <div class="time__taken"></div>
+      <h2 tabindex="0">Quiz Complete!</h2>
+      <div class="score" tabindex="0"></div>
+      <div class="time__taken" tabindex="0"></div>
       <div class="high__scores">
         <h3>High Scores</h3>
-        <ul class="score__list"></ul>
+        <ul class="score__list" role="list"></ul>
       </div>
       <button class="button" onclick="location.reload()">Try Again</button>
     </div>
